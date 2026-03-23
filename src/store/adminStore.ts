@@ -59,6 +59,12 @@ export const useAdminStore = create<AdminState>()(
         set(state => ({ orders: [order, ...state.orders] }));
       },
 
+      updateOrderStatus: (id, status) => {
+        set(state => ({
+          orders: state.orders.map(o => o.id === id ? { ...o, status } : o),
+        }));
+      },
+
       addDiscountCode: (discountData) => {
         const discount: DiscountCode = { ...discountData, id: Date.now().toString(), usedCount: 0 };
         set(state => ({ discounts: [...state.discounts, discount] }));

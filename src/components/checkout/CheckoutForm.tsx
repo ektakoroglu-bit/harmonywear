@@ -76,7 +76,10 @@ export default function CheckoutForm() {
   const { items, getSubtotal, getShipping, getTotal, getDiscountAmount, discountCode, clearCart } = useCartStore();
   const discountAmount = getDiscountAmount();
   const addPoints = useUserStore(state => state.addPoints);
+  const currentUser = useUserStore(state => state.currentUser);
   const addOrder = useAdminStore(state => state.addOrder);
+  const savedAddresses = currentUser?.addresses ?? [];
+  const [selectedAddressId, setSelectedAddressId] = useState<string | null>(null);
   const [form, setForm] = useState<FormData>(defaultForm);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Partial<Record<keyof FormData, string>>>({});
@@ -95,6 +98,20 @@ export default function CheckoutForm() {
   };
 
   const shippingDistricts = getDistricts(form.city);
+
+  const applySavedAddress = (id: string) => {
+    const addr = savedAddresses.find(a => a.id === id);
+    if (!addr) return;
+    setSelectedAddressId(id);
+    setForm(prev => ({
+      ...prev,
+      address: addr.address,
+      city: addr.city,
+      district: addr.district ?? '',
+      zipCode: addr.zipCode ?? '',
+      country: addr.country || 'Türkiye',
+    }));
+  };
 
   const validate = () => {
     const e: Partial<Record<keyof FormData, string>> = {};
@@ -268,6 +285,39 @@ export default function CheckoutForm() {
           <MapPin size={18} className="text-rose-deep" />
           {t('shippingAddress')}
         </h2>
+
+        {/* Saved address picker */}
+        {savedAddresses.length > 0 && (
+          <div className="mb-5">
+            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
+              {locale === 'tr' ? 'Kayıtlı Adreslerim' : 'Saved Addresses'}
+            </p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              {savedAddresses.map(addr => (
+                <button
+                  key={addr.id}
+                  type="button"
+                  onClick={() => applySavedAddress(addr.id)}
+                  className={`text-left px-4 py-3 rounded-xl border text-sm transition-colors ${
+                    selectedAddressId === addr.id
+                      ? 'border-mint-darker bg-mint-pale text-charcoal'
+                      : 'border-gray-200 hover:border-mint-dark hover:bg-gray-50 text-gray-600'
+                  }`}
+                >
+                  <p className="font-semibold text-charcoal text-xs mb-0.5">{addr.label}</p>
+                  <p className="text-xs text-gray-500 truncate">{addr.address}</p>
+                  <p className="text-xs text-gray-400">{addr.district ? `${addr.district}, ` : ''}{addr.city}</p>
+                </button>
+              ))}
+            </div>
+            <div className="mt-3 flex items-center gap-2">
+              <div className="flex-1 h-px bg-gray-100" />
+              <span className="text-xs text-gray-400">{locale === 'tr' ? 'ya da yeni adres girin' : 'or enter a new address'}</span>
+              <div className="flex-1 h-px bg-gray-100" />
+            </div>
+          </div>
+        )}
+
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="sm:col-span-2">
             <Input label={t('address')} value={form.address} onChange={e => update('address', e.target.value)} error={errors.address} required />

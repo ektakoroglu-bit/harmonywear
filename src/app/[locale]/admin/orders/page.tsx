@@ -130,6 +130,7 @@ export default function AdminOrdersPage() {
   const locale = useLocale() as 'tr' | 'en';
   const t = useTranslations('admin');
   const orders = useAdminStore(s => s.orders);
+  const updateOrderStatus = useAdminStore(s => s.updateOrderStatus);
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [refreshing, setRefreshing] = useState(false);
 
@@ -192,6 +193,9 @@ export default function AdminOrdersPage() {
                 <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase hidden md:table-cell">
                   {locale === 'tr' ? 'Tarih' : 'Date'}
                 </th>
+                <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase">
+                  {locale === 'tr' ? 'İşlem' : 'Action'}
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -237,11 +241,22 @@ export default function AdminOrdersPage() {
                           {new Date(order.createdAt).toLocaleDateString(locale === 'tr' ? 'tr-TR' : 'en-US')}
                         </span>
                       </td>
+                      <td className="px-5 py-4" onClick={e => e.stopPropagation()}>
+                        <select
+                          value={order.status}
+                          onChange={e => updateOrderStatus(order.id, e.target.value as OrderStatus)}
+                          className="text-xs border border-gray-200 rounded-lg px-2 py-1.5 bg-white text-charcoal focus:outline-none focus:ring-2 focus:ring-rose-blush/40 cursor-pointer"
+                        >
+                          {(Object.keys(statusConfig) as OrderStatus[]).map(s => (
+                            <option key={s} value={s}>{statusConfig[s].label[locale]}</option>
+                          ))}
+                        </select>
+                      </td>
                     </tr>
 
                     {isExpanded && (
                       <tr key={`${order.id}-detail`}>
-                        <td colSpan={6} className="p-0">
+                        <td colSpan={7} className="p-0">
                           <OrderDetail order={order} locale={locale} />
                         </td>
                       </tr>

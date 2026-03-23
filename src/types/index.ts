@@ -243,6 +243,7 @@ export interface AdminState {
   deleteProduct: (id: string) => void;
   updateStock: (productId: string, stockItems: StockItem[]) => void;
   addOrder: (order: Order) => void;
+  updateOrderStatus: (id: string, status: OrderStatus) => void;
   addDiscountCode: (discount: Omit<DiscountCode, 'id' | 'usedCount'>) => void;
   updateDiscountCode: (id: string, updates: Partial<DiscountCode>) => void;
   deleteDiscountCode: (id: string) => void;
