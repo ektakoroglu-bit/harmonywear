@@ -49,9 +49,9 @@ export default function AdminSidebar() {
           >
             <item.icon size={18} />
             <span className="flex-1">{item.label}</span>
-            {'badge' in item && item.badge > 0 && (
+            {(item.badge ?? 0) > 0 && (
               <span className="bg-rose-blush text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">
-                {item.badge > 9 ? '9+' : item.badge}
+                {(item.badge ?? 0) > 9 ? '9+' : item.badge}
               </span>
             )}
           </Link>
