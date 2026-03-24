@@ -80,7 +80,15 @@ export default function CheckoutForm() {
   const addOrder = useAdminStore(state => state.addOrder);
   const savedAddresses = currentUser?.addresses ?? [];
   const [selectedAddressId, setSelectedAddressId] = useState<string | null>(null);
-  const [form, setForm] = useState<FormData>(defaultForm);
+  const [form, setForm] = useState<FormData>({
+    ...defaultForm,
+    ...(currentUser ? {
+      firstName: currentUser.firstName,
+      lastName: currentUser.lastName,
+      email: currentUser.email,
+      phone: currentUser.phone ?? '',
+    } : {}),
+  });
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Partial<Record<keyof FormData, string>>>({});
 
@@ -122,6 +130,8 @@ export default function CheckoutForm() {
     if (form.phone.replace(/\D/g, '').length < 10) e.phone = locale === 'tr' ? 'Geçerli telefon numarası girin' : 'Enter a valid phone number';
     if (!form.address) e.address = req;
     if (!form.city) e.city = req;
+    if (!form.district) e.district = req;
+    if (!form.zipCode) e.zipCode = req;
     if (!form.cardNumber || form.cardNumber.replace(/\s/g, '').length < 16) e.cardNumber = 'Geçerli kart numarası girin';
     if (!form.cardName) e.cardName = req;
     if (!form.expiry || form.expiry.length < 5) e.expiry = req;
@@ -149,7 +159,7 @@ export default function CheckoutForm() {
           buyer: {
             firstName: form.firstName,
             lastName: form.lastName,
-            email: form.email,
+            email: currentUser?.email ?? form.email,
             phone: form.phone,
             address: form.address,
             city: form.city,
@@ -202,7 +212,7 @@ export default function CheckoutForm() {
           customer: {
             firstName: form.firstName,
             lastName: form.lastName,
-            email: form.email,
+            email: currentUser?.email ?? form.email,
             phone: form.phone,
           },
           shippingAddress: {
@@ -272,8 +282,8 @@ export default function CheckoutForm() {
           {t('personalInfo')}
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <Input label={t('firstName')} value={form.firstName} onChange={e => update('firstName', e.target.value)} error={errors.firstName} required />
-          <Input label={t('lastName')} value={form.lastName} onChange={e => update('lastName', e.target.value)} error={errors.lastName} required />
+          <Input label={t('firstName')} value={form.firstName} onChange={e => update('firstName', e.target.value.replace(/[0-9]/g, ''))} error={errors.firstName} required />
+          <Input label={t('lastName')} value={form.lastName} onChange={e => update('lastName', e.target.value.replace(/[0-9]/g, ''))} error={errors.lastName} required />
           <Input label={t('email')} type="email" value={form.email} onChange={e => update('email', e.target.value)} error={errors.email} required />
           <Input label={t('phone')} type="tel" value={form.phone} onChange={e => update('phone', e.target.value)} error={errors.phone} required placeholder="5XX XXX XX XX" />
         </div>
@@ -343,8 +353,16 @@ export default function CheckoutForm() {
             onChange={e => update('district', e.target.value)}
             error={errors.district}
             disabled={!form.city}
+            required
           />
-          <Input label={t('zipCode')} value={form.zipCode} onChange={e => update('zipCode', e.target.value)} />
+          <Input
+            label={t('zipCode')}
+            value={form.zipCode}
+            onChange={e => update('zipCode', e.target.value.replace(/\D/g, ''))}
+            error={errors.zipCode}
+            inputMode="numeric"
+            required
+          />
           <Input label={t('country')} value="Türkiye" readOnly className="bg-gray-50 cursor-default text-gray-500" />
         </div>
       </section>

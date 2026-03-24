@@ -179,20 +179,34 @@ function AddressesTab({ locale, t }: { locale: 'tr' | 'en'; t: ReturnType<typeof
   const { currentUser, addAddress, removeAddress } = useUserStore();
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState(emptyAddrForm);
+  const [addrErrors, setAddrErrors] = useState<Partial<Record<string, string>>>({});
 
-  const upd = (k: string, v: string) => setForm(p => ({
-    ...p,
-    [k]: v,
-    ...(k === 'city' ? { district: '' } : {}),
-  }));
+  const upd = (k: string, v: string) => {
+    const val = (k === 'firstName' || k === 'lastName') ? v.replace(/[^a-zA-ZğĞüÜşŞıİöÖçÇ\s]/g, '') : v;
+    setForm(p => ({
+      ...p,
+      [k]: val,
+      ...(k === 'city' ? { district: '' } : {}),
+    }));
+    if (addrErrors[k]) setAddrErrors(p => ({ ...p, [k]: undefined }));
+  };
 
   const districts = getDistricts(form.city);
 
   const handleSave = () => {
-    if (!form.label || !form.firstName || !form.address || !form.city) return;
+    const req = locale === 'tr' ? 'Zorunlu alan' : 'Required';
+    const e: Partial<Record<string, string>> = {};
+    if (!form.label) e.label = req;
+    if (!form.firstName) e.firstName = req;
+    if (!form.address) e.address = req;
+    if (!form.city) e.city = req;
+    if (!form.district) e.district = req;
+    if (!form.zipCode) e.zipCode = req;
+    if (Object.keys(e).length > 0) { setAddrErrors(e); return; }
     addAddress(form);
     toast.success(t('addressSaved'));
     setForm(emptyAddrForm);
+    setAddrErrors({});
     setShowForm(false);
   };
 
@@ -235,13 +249,15 @@ function AddressesTab({ locale, t }: { locale: 'tr' | 'en'; t: ReturnType<typeof
             <div className="sm:col-span-2">
               <label className="block text-xs font-medium text-gray-500 mb-1">{t('addressLabel')}</label>
               <input value={form.label} onChange={e => upd('label', e.target.value)}
-                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-rose-blush" />
+                className={`w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-rose-blush ${addrErrors.label ? 'border-red-400' : 'border-gray-200'}`} />
+              {addrErrors.label && <p className="text-xs text-red-500 mt-1">{addrErrors.label}</p>}
             </div>
             {/* First / last name */}
             <div>
               <label className="block text-xs font-medium text-gray-500 mb-1">{t('firstName')}</label>
               <input value={form.firstName} onChange={e => upd('firstName', e.target.value)}
-                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-rose-blush" />
+                className={`w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-rose-blush ${addrErrors.firstName ? 'border-red-400' : 'border-gray-200'}`} />
+              {addrErrors.firstName && <p className="text-xs text-red-500 mt-1">{addrErrors.firstName}</p>}
             </div>
             <div>
               <label className="block text-xs font-medium text-gray-500 mb-1">{t('lastName')}</label>
@@ -252,7 +268,8 @@ function AddressesTab({ locale, t }: { locale: 'tr' | 'en'; t: ReturnType<typeof
             <div className="sm:col-span-2">
               <label className="block text-xs font-medium text-gray-500 mb-1">{t('address')}</label>
               <input value={form.address} onChange={e => upd('address', e.target.value)}
-                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-rose-blush" />
+                className={`w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-rose-blush ${addrErrors.address ? 'border-red-400' : 'border-gray-200'}`} />
+              {addrErrors.address && <p className="text-xs text-red-500 mt-1">{addrErrors.address}</p>}
             </div>
             {/* City dropdown */}
             <Select
@@ -261,6 +278,7 @@ function AddressesTab({ locale, t }: { locale: 'tr' | 'en'; t: ReturnType<typeof
               options={CITY_NAMES}
               value={form.city}
               onChange={e => upd('city', e.target.value)}
+              error={addrErrors.city}
             />
             {/* District dropdown */}
             <Select
@@ -274,12 +292,15 @@ function AddressesTab({ locale, t }: { locale: 'tr' | 'en'; t: ReturnType<typeof
               value={form.district}
               onChange={e => upd('district', e.target.value)}
               disabled={!form.city}
+              error={addrErrors.district}
             />
             {/* ZIP */}
             <div>
               <label className="block text-xs font-medium text-gray-500 mb-1">{t('zipCode')}</label>
-              <input value={form.zipCode} onChange={e => upd('zipCode', e.target.value)}
-                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-rose-blush" />
+              <input value={form.zipCode} onChange={e => upd('zipCode', e.target.value.replace(/\D/g, ''))}
+                inputMode="numeric"
+                className={`w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-rose-blush ${addrErrors.zipCode ? 'border-red-400' : 'border-gray-200'}`} />
+              {addrErrors.zipCode && <p className="text-xs text-red-500 mt-1">{addrErrors.zipCode}</p>}
             </div>
             {/* Country */}
             <div>
@@ -289,7 +310,7 @@ function AddressesTab({ locale, t }: { locale: 'tr' | 'en'; t: ReturnType<typeof
             </div>
           </div>
           <div className="flex gap-3 justify-end pt-2">
-            <button onClick={() => { setShowForm(false); setForm(emptyAddrForm); }} className="text-sm text-gray-500 hover:text-charcoal px-4 py-2 rounded-lg hover:bg-gray-100 transition-colors">
+            <button onClick={() => { setShowForm(false); setForm(emptyAddrForm); setAddrErrors({}); }} className="text-sm text-gray-500 hover:text-charcoal px-4 py-2 rounded-lg hover:bg-gray-100 transition-colors">
               {t('cancel')}
             </button>
             <button onClick={handleSave} className="bg-charcoal text-white text-sm px-5 py-2 rounded-lg hover:bg-charcoal-light transition-colors font-medium">
@@ -360,7 +381,9 @@ function SettingsTab({ locale, t }: { locale: 'tr' | 'en'; t: ReturnType<typeof 
               <input
                 value={(profile as Record<string, string>)[key]}
                 onChange={e => {
-                  const val = key === 'phone' ? formatTRPhone(e.target.value) : e.target.value;
+                  let val = e.target.value;
+                  if (key === 'phone') val = formatTRPhone(val);
+                  else if (key === 'firstName' || key === 'lastName') val = val.replace(/[^a-zA-ZğĞüÜşŞıİöÖçÇ\s]/g, '');
                   setProfile(p => ({ ...p, [key]: val }));
                 }}
                 placeholder={key === 'phone' ? '5XX XXX XX XX' : undefined}

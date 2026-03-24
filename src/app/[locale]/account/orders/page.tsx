@@ -15,12 +15,12 @@ import { Order, OrderStatus } from '@/types';
 import ShopLayout from '@/components/layout/ShopLayout';
 
 const statusConfig: Record<OrderStatus, { label: { tr: string; en: string }; color: string }> = {
-  pending:    { label: { tr: 'Bekliyor',      en: 'Pending'    }, color: 'bg-yellow-100 text-yellow-700'   },
-  paid:       { label: { tr: 'Ödendi',        en: 'Paid'       }, color: 'bg-blue-100 text-blue-700'      },
-  processing: { label: { tr: 'Hazırlanıyor',  en: 'Processing' }, color: 'bg-purple-100 text-purple-700'  },
-  shipped:    { label: { tr: 'Kargoda',       en: 'Shipped'    }, color: 'bg-indigo-100 text-indigo-700'  },
-  delivered:  { label: { tr: 'Teslim Edildi', en: 'Delivered'  }, color: 'bg-emerald-100 text-emerald-700'},
-  cancelled:  { label: { tr: 'İptal',         en: 'Cancelled'  }, color: 'bg-red-100 text-red-700'        },
+  pending:    { label: { tr: 'Siparişiniz Alındı',        en: 'Pending'    }, color: 'bg-yellow-100 text-yellow-700'   },
+  paid:       { label: { tr: 'Ödendi',                    en: 'Paid'       }, color: 'bg-blue-100 text-blue-700'      },
+  processing: { label: { tr: 'Siparişiniz Hazırlanıyor',  en: 'Processing' }, color: 'bg-purple-100 text-purple-700'  },
+  shipped:    { label: { tr: 'Siparişiniz Kargoda',        en: 'Shipped'    }, color: 'bg-indigo-100 text-indigo-700'  },
+  delivered:  { label: { tr: 'Teslim Edildi',              en: 'Delivered'  }, color: 'bg-emerald-100 text-emerald-700'},
+  cancelled:  { label: { tr: 'İptal Edildi',               en: 'Cancelled'  }, color: 'bg-red-100 text-red-700'        },
 };
 
 const statusSteps: OrderStatus[] = ['paid', 'processing', 'shipped', 'delivered'];

@@ -11,12 +11,12 @@ import { formatPrice } from '@/lib/utils';
 import { Order, OrderStatus } from '@/types';
 
 const statusConfig: Record<OrderStatus, { label: { tr: string; en: string }; color: string; icon: React.ElementType }> = {
-  pending:    { label: { tr: 'Bekliyor',       en: 'Pending'    }, color: 'bg-yellow-100 text-yellow-700',  icon: Package     },
-  paid:       { label: { tr: 'Ödendi',         en: 'Paid'       }, color: 'bg-blue-100 text-blue-700',     icon: CheckCircle },
-  processing: { label: { tr: 'Hazırlanıyor',   en: 'Processing' }, color: 'bg-purple-100 text-purple-700', icon: Package     },
-  shipped:    { label: { tr: 'Kargoda',        en: 'Shipped'    }, color: 'bg-indigo-100 text-indigo-700', icon: Truck       },
-  delivered:  { label: { tr: 'Teslim Edildi',  en: 'Delivered'  }, color: 'bg-emerald-100 text-emerald-700', icon: CheckCircle },
-  cancelled:  { label: { tr: 'İptal',          en: 'Cancelled'  }, color: 'bg-red-100 text-red-700',       icon: Package     },
+  pending:    { label: { tr: 'Siparişiniz Alındı',        en: 'Pending'    }, color: 'bg-yellow-100 text-yellow-700',    icon: Package     },
+  paid:       { label: { tr: 'Ödendi',                    en: 'Paid'       }, color: 'bg-blue-100 text-blue-700',       icon: CheckCircle },
+  processing: { label: { tr: 'Siparişiniz Hazırlanıyor',  en: 'Processing' }, color: 'bg-purple-100 text-purple-700',   icon: Package     },
+  shipped:    { label: { tr: 'Siparişiniz Kargoda',        en: 'Shipped'    }, color: 'bg-indigo-100 text-indigo-700',   icon: Truck       },
+  delivered:  { label: { tr: 'Teslim Edildi',              en: 'Delivered'  }, color: 'bg-emerald-100 text-emerald-700', icon: CheckCircle },
+  cancelled:  { label: { tr: 'İptal Edildi',               en: 'Cancelled'  }, color: 'bg-red-100 text-red-700',         icon: Package     },
 };
 
 function OrderDetail({ order, locale }: { order: Order; locale: 'tr' | 'en' }) {
