@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useLocale, useTranslations } from 'next-intl';
 import { LayoutDashboard, Package, Tag, ImageIcon, ShoppingCart, LogOut, Menu, X, Star, Bell } from 'lucide-react';
-import { useAdminStore } from '@/store/panelStore';
+import { useAdminStore } from '@/store/adminStore';
 import { cn } from '@/lib/utils';
 import { useState } from 'react';
 
