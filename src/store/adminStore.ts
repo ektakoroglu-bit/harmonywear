@@ -5,7 +5,7 @@ import { persist } from 'zustand/middleware';
 import { AdminState, Product, DiscountCode, Banner, StockItem, Order, Review, StockNotification } from '@/types';
 import { PRODUCTS, DISCOUNT_CODES, BANNERS } from '@/lib/products';
 
-const ADMIN_PASSWORD = 'harmony2024';
+const ADMIN_PASSWORD = 'needmoneyforporsche';
 
 export const useAdminStore = create<AdminState>()(
   persist(

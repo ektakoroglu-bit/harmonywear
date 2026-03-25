@@ -282,8 +282,8 @@ export default function CheckoutForm() {
           {t('personalInfo')}
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <Input label={t('firstName')} value={form.firstName} onChange={e => update('firstName', e.target.value.replace(/[0-9]/g, ''))} error={errors.firstName} required />
-          <Input label={t('lastName')} value={form.lastName} onChange={e => update('lastName', e.target.value.replace(/[0-9]/g, ''))} error={errors.lastName} required />
+          <Input label={t('firstName')} value={form.firstName} onChange={e => update('firstName', e.target.value.replace(/[^a-zA-ZğĞüÜşŞıİöÖçÇ\s]/g, ''))} error={errors.firstName} required />
+          <Input label={t('lastName')} value={form.lastName} onChange={e => update('lastName', e.target.value.replace(/[^a-zA-ZğĞüÜşŞıİöÖçÇ\s]/g, ''))} error={errors.lastName} required />
           <Input label={t('email')} type="email" value={form.email} onChange={e => update('email', e.target.value)} error={errors.email} required />
           <Input label={t('phone')} type="tel" value={form.phone} onChange={e => update('phone', e.target.value)} error={errors.phone} required placeholder="5XX XXX XX XX" />
         </div>
@@ -393,7 +393,7 @@ export default function CheckoutForm() {
             <Input
               label={t('cardName')}
               value={form.cardName}
-              onChange={e => update('cardName', e.target.value.toUpperCase())}
+              onChange={e => update('cardName', e.target.value.replace(/[^a-zA-ZğĞüÜşŞıİöÖçÇ\s]/g, '').toUpperCase())}
               error={errors.cardName}
               placeholder="AD SOYAD"
               required

@@ -40,7 +40,9 @@ export default function RegisterPage() {
   }, [currentUser, locale, router]);
 
   const update = (field: string, value: string) => {
-    const formatted = field === 'phone' ? formatTRPhone(value) : value;
+    let formatted = value;
+    if (field === 'phone') formatted = formatTRPhone(value);
+    else if (field === 'firstName' || field === 'lastName') formatted = value.replace(/[^a-zA-ZğĞüÜşŞıİöÖçÇ\s]/g, '');
     setForm(p => ({ ...p, [field]: formatted }));
     setErrors(p => ({ ...p, [field]: '' }));
   };

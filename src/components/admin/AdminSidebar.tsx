@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useLocale, useTranslations } from 'next-intl';
 import { LayoutDashboard, Package, Tag, ImageIcon, ShoppingCart, LogOut, Menu, X, Star, Bell } from 'lucide-react';
-import { useAdminStore } from '@/store/adminStore';
+import { useAdminStore } from '@/store/panelStore';
 import { cn } from '@/lib/utils';
 import { useState } from 'react';
 
@@ -19,13 +19,13 @@ export default function AdminSidebar() {
   const stockNotifCount = useAdminStore(s => s.stockNotifications.length);
 
   const navItems = [
-    { href: `/${locale}/admin`, label: t('dashboard'), icon: LayoutDashboard },
-    { href: `/${locale}/admin/products`, label: t('products'), icon: Package },
-    { href: `/${locale}/admin/orders`, label: t('orders'), icon: ShoppingCart },
-    { href: `/${locale}/admin/discounts`, label: t('discounts'), icon: Tag },
-    { href: `/${locale}/admin/banners`, label: t('banners'), icon: ImageIcon },
-    { href: `/${locale}/admin/reviews`, label: 'Yorumlar', icon: Star, badge: pendingReviews },
-    { href: `/${locale}/admin/stock-notifications`, label: 'Stok Bildirimleri', icon: Bell, badge: stockNotifCount },
+    { href: `/${locale}/panel`, label: t('dashboard'), icon: LayoutDashboard },
+    { href: `/${locale}/panel/products`, label: t('products'), icon: Package },
+    { href: `/${locale}/panel/orders`, label: t('orders'), icon: ShoppingCart },
+    { href: `/${locale}/panel/discounts`, label: t('discounts'), icon: Tag },
+    { href: `/${locale}/panel/banners`, label: t('banners'), icon: ImageIcon },
+    { href: `/${locale}/panel/reviews`, label: 'Yorumlar', icon: Star, badge: pendingReviews },
+    { href: `/${locale}/panel/stock-notifications`, label: 'Stok Bildirimleri', icon: Bell, badge: stockNotifCount },
   ];
 
   const NavContent = () => (

@@ -1,16 +1,29 @@
 'use client';
 
+import { useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useLocale, useTranslations } from 'next-intl';
 import { ArrowLeft, ShoppingBag } from 'lucide-react';
 import { useCartStore } from '@/store/cartStore';
+import { useUserStore } from '@/store/userStore';
 import CheckoutForm from '@/components/checkout/CheckoutForm';
 import ShopLayout from '@/components/layout/ShopLayout';
+import toast from 'react-hot-toast';
 
 export default function CheckoutPage() {
   const locale = useLocale();
   const t = useTranslations('checkout');
+  const router = useRouter();
   const items = useCartStore(state => state.items);
+  const currentUser = useUserStore(state => state.currentUser);
+
+  useEffect(() => {
+    if (!currentUser) {
+      toast.error(locale === 'tr' ? 'Sipariş verebilmek için giriş yapmanız gerekmektedir.' : 'You need to log in to place an order.');
+      router.replace(`/${locale}/account/login`);
+    }
+  }, [currentUser, locale, router]);
 
   if (items.length === 0) {
     return (

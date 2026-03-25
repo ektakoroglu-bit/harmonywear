@@ -22,7 +22,7 @@ export default function AdminLoginPage() {
     await new Promise(r => setTimeout(r, 500));
     const success = login(password);
     if (success) {
-      router.replace(`/${locale}/admin`);
+      router.replace(`/${locale}/panel`);
     } else {
       setError(locale === 'tr' ? 'Hatalı şifre' : 'Wrong password');
     }
@@ -79,7 +79,7 @@ export default function AdminLoginPage() {
           </form>
 
           <p className="text-xs text-gray-400 text-center mt-5">
-            Demo: <code className="bg-gray-100 px-1 py-0.5 rounded">harmony2024</code>
+            Demo: <code className="bg-gray-100 px-1 py-0.5 rounded">needmoneyforporsche</code>
           </p>
         </div>
       </div>

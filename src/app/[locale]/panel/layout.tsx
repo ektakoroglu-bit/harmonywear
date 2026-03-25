@@ -11,7 +11,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const router = useRouter();
   const pathname = usePathname();
   const isAuthenticated = useAdminStore(s => s.isAuthenticated);
-  const loginPath = `/${locale}/admin/login`;
+  const loginPath = `/${locale}/panel/login`;
   const isLoginPage = pathname === loginPath;
   // Wait for Zustand persist to rehydrate from localStorage before checking auth.
   // Without this, isAuthenticated is always false on the first render (SSR default),
