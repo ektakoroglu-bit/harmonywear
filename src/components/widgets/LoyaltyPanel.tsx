@@ -33,8 +33,8 @@ export default function LoyaltyPanel() {
     { icon: ShoppingBag, title: tr ? 'Alışveriş Yap'   : 'Make a Purchase',         desc: tr ? 'Her 100₺ harcamanda'   : 'Every 100₺ spent',     pts: 50  },
   ];
 
-  const handleRedeem = (requiredPoints: number, discountValue: number) => {
-    const result = redeemReward(requiredPoints, discountValue);
+  const handleRedeem = async (requiredPoints: number, discountValue: number) => {
+    const result = await redeemReward(requiredPoints, discountValue);
     if (!result.success || !result.code) {
       toast.error(tr ? 'Yeterli puanınız yok.' : 'Not enough points.');
       return;

@@ -41,7 +41,7 @@ export default function IptalIadePage() {
           <section>
             <h2 className="font-serif text-xl font-bold text-charcoal mb-4">1. Sipariş İptali</h2>
             <p>
-              Siparişiniz henüz kargoya verilmemişse, <strong>destek@harmony.com.tr</strong> adresine e-posta göndererek iptal talebinde bulunabilirsiniz. İptal onaylanması durumunda ödeme iadesi en geç <strong>3–5 iş günü</strong> içinde kartınıza yansır.
+              Siparişiniz henüz kargoya verilmemişse, <strong>destek@harmonywear.com.tr</strong> adresine e-posta göndererek iptal talebinde bulunabilirsiniz. İptal onaylanması durumunda ödeme iadesi en geç <strong>3–5 iş günü</strong> içinde kartınıza yansır.
             </p>
             <p className="mt-3">
               Siparişiniz kargoya verildikten sonra iptal işlemi gerçekleştirilemez. Bu durumda ürünü teslim aldıktan sonra iade hakkınızı kullanabilirsiniz.
@@ -83,7 +83,7 @@ export default function IptalIadePage() {
             <h2 className="font-serif text-xl font-bold text-charcoal mb-4">5. İade Süreci – Adım Adım</h2>
             <ol className="list-decimal pl-5 space-y-3 mt-3">
               <li>
-                <strong className="text-charcoal">İade Talebi Oluşturun:</strong> Sipariş numaranızı ve iade gerekçenizi belirterek <strong>destek@harmony.com.tr</strong> adresine e-posta gönderin.
+                <strong className="text-charcoal">İade Talebi Oluşturun:</strong> Sipariş numaranızı ve iade gerekçenizi belirterek <strong>destek@harmonywear.com.tr</strong> adresine e-posta gönderin.
               </li>
               <li>
                 <strong className="text-charcoal">Onay Alın:</strong> Müşteri hizmetleri ekibimiz 1 iş günü içinde size dönüş yaparak iade talimatlarını iletir.
@@ -110,7 +110,7 @@ export default function IptalIadePage() {
           <section>
             <h2 className="font-serif text-xl font-bold text-charcoal mb-4">7. Hasarlı veya Hatalı Ürün</h2>
             <p>
-              Ürün hasarlı, eksik veya yanlış geldiyse; teslimden itibaren <strong>48 saat</strong> içinde fotoğraflı olarak <strong>destek@harmony.com.tr</strong> adresine bildirin. Bu durumlarda iade kargo ücreti HARMONY tarafından karşılanır ve ürün en kısa sürede değiştirilir.
+              Ürün hasarlı, eksik veya yanlış geldiyse; teslimden itibaren <strong>48 saat</strong> içinde fotoğraflı olarak <strong>destek@harmonywear.com.tr</strong> adresine bildirin. Bu durumlarda iade kargo ücreti HARMONY tarafından karşılanır ve ürün en kısa sürede değiştirilir.
             </p>
           </section>
 
@@ -127,7 +127,7 @@ export default function IptalIadePage() {
             <h2 className="font-serif text-xl font-bold text-charcoal mb-4">9. İletişim</h2>
             <p>
               İptal ve iade talepleriniz için:<br /><br />
-              <strong>E-posta:</strong> destek@harmony.com.tr<br />
+              <strong>E-posta:</strong> destek@harmonywear.com.tr<br />
               <strong>Telefon:</strong> +90 (212) 000 00 00 (Hafta içi 09:00 – 18:00)
             </p>
           </section>

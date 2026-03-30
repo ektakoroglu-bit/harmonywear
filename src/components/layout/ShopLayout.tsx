@@ -5,10 +5,12 @@ import LoyaltyPanel from '@/components/widgets/LoyaltyPanel';
 import WelcomePopup from '@/components/widgets/WelcomePopup';
 import WhatsAppButton from '@/components/widgets/WhatsAppButton';
 import CookieConsent from '@/components/widgets/CookieConsent';
+import StoreInitializer from '@/components/StoreInitializer';
 
 export default function ShopLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex flex-col min-h-screen">
+      <StoreInitializer />
       <GuestCartGuard />
       <Header />
       <main className="flex-1 pt-[108px]">

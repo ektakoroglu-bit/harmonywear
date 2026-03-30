@@ -172,15 +172,15 @@ export interface RegisterData {
 export interface UserState {
   users: User[];
   currentUser: User | null;
-  register: (data: RegisterData) => { success: boolean; error?: string };
-  login: (email: string, password: string) => { success: boolean; error?: string };
+  register: (data: RegisterData) => Promise<{ success: boolean; error?: string }>;
+  login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
   logout: () => void;
-  updateProfile: (updates: Partial<Pick<User, 'firstName' | 'lastName' | 'phone'>>) => void;
-  changePassword: (currentPassword: string, newPassword: string) => { success: boolean; error?: string };
-  addAddress: (address: Omit<SavedAddress, 'id'>) => void;
-  removeAddress: (id: string) => void;
-  addPoints: (amount: number, reason: PointsTransaction['reason'], description: string, orderId?: string) => void;
-  redeemReward: (requiredPoints: number, discountValue: number) => { success: boolean; code?: string };
+  updateProfile: (updates: Partial<Pick<User, 'firstName' | 'lastName' | 'phone'>>) => Promise<void>;
+  changePassword: (currentPassword: string, newPassword: string) => Promise<{ success: boolean; error?: string }>;
+  addAddress: (address: Omit<SavedAddress, 'id'>) => Promise<void>;
+  removeAddress: (id: string) => Promise<void>;
+  addPoints: (amount: number, reason: PointsTransaction['reason'], description: string, orderId?: string) => Promise<void>;
+  redeemReward: (requiredPoints: number, discountValue: number) => Promise<{ success: boolean; code?: string }>;
 }
 
 export interface CheckoutFormData {

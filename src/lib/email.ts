@@ -150,7 +150,7 @@ function buildCustomerEmailHtml(order: Order): string {
             <div style="margin-top:40px;padding-top:24px;border-top:1px solid #f0ece9;text-align:center;">
               <p style="margin:0;color:#888;font-size:13px;line-height:1.8;">
                 Siparişinizle ilgili sorularınız için<br>
-                <a href="mailto:${process.env.EMAIL_USER || 'destek@harmony.com.tr'}" style="color:#D4A5A5;text-decoration:none;">${process.env.EMAIL_USER || 'destek@harmony.com.tr'}</a> adresine yazabilirsiniz.
+                <a href="mailto:${process.env.EMAIL_USER || 'destek@harmonywear.com.tr'}" style="color:#D4A5A5;text-decoration:none;">${process.env.EMAIL_USER || 'destek@harmonywear.com.tr'}</a> adresine yazabilirsiniz.
               </p>
               <p style="margin:16px 0 0;color:#D4A5A5;font-size:12px;letter-spacing:3px;">HARMONY</p>
             </div>

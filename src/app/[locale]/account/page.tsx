@@ -357,8 +357,7 @@ function SettingsTab({ locale, t }: { locale: 'tr' | 'en'; t: ReturnType<typeof 
       return;
     }
     setPwdLoading(true);
-    await new Promise(r => setTimeout(r, 300));
-    const result = changePassword(passwords.current, passwords.next);
+    const result = await changePassword(passwords.current, passwords.next);
     setPwdLoading(false);
     if (result.success) {
       toast.success(t('passwordChanged'));
@@ -444,8 +443,8 @@ function PointsTab({ locale }: { locale: 'tr' | 'en' }) {
   const nextReward = LOYALTY_REWARDS.find(r => r.points > points);
   const progressPct = nextReward ? Math.min(100, (points / nextReward.points) * 100) : 100;
 
-  const handleRedeem = (requiredPoints: number, discountValue: number) => {
-    const result = redeemReward(requiredPoints, discountValue);
+  const handleRedeem = async (requiredPoints: number, discountValue: number) => {
+    const result = await redeemReward(requiredPoints, discountValue);
     if (!result.success || !result.code) {
       toast.error(tr ? 'Yeterli puanınız yok.' : 'Not enough points.');
       return;

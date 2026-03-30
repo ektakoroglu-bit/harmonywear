@@ -78,8 +78,7 @@ export default function RegisterPage() {
     e.preventDefault();
     if (!validate()) return;
     setLoading(true);
-    await new Promise(r => setTimeout(r, 400));
-    const result = register({
+    const result = await register({
       firstName: form.firstName,
       lastName: form.lastName,
       email: form.email,

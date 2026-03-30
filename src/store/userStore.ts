@@ -2,155 +2,169 @@
 
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { UserState, User, RegisterData, SavedAddress, PointsTransaction } from '@/types';
+import type { UserState, User, RegisterData, SavedAddress } from '@/types';
 
-// Simple encoding for demo only – not secure for production
-function hashPassword(password: string): string {
-  return btoa(encodeURIComponent(password + '_harmony'));
+// Strips passwordHash before storing — server never sends it to the client anyway
+function sanitize(user: User): User {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { passwordHash: _, ...safe } = user as User & { passwordHash?: string };
+  return safe as User;
+}
+
+async function api<T>(path: string, opts?: RequestInit): Promise<T> {
+  const res = await fetch(path, {
+    headers: { 'Content-Type': 'application/json' },
+    credentials: 'include', // send httpOnly session cookie
+    ...opts,
+  });
+  const json = await res.json();
+  if (!res.ok) throw new Error(json.error ?? 'request failed');
+  return json;
 }
 
 export const useUserStore = create<UserState>()(
   persist(
     (set, get) => ({
-      users: [],
+      users: [], // unused — data lives in Supabase
       currentUser: null,
 
-      register: (data: RegisterData) => {
-        const { users } = get();
-        if (users.find(u => u.email.toLowerCase() === data.email.toLowerCase())) {
-          return { success: false, error: 'emailExists' };
+      register: async (data: RegisterData) => {
+        try {
+          const json = await api<{ user: User }>('/api/auth/register', {
+            method: 'POST',
+            body: JSON.stringify(data),
+          });
+          set({ currentUser: sanitize(json.user) });
+          return { success: true };
+        } catch (err: unknown) {
+          const msg = err instanceof Error ? err.message : 'serverError';
+          return { success: false, error: msg };
         }
-        if (data.password.length < 6) {
-          return { success: false, error: 'passwordTooShort' };
-        }
-        const user: User = {
-          id: Date.now().toString(),
-          firstName: data.firstName.trim(),
-          lastName: data.lastName.trim(),
-          email: data.email.toLowerCase().trim(),
-          passwordHash: hashPassword(data.password),
-          phone: data.phone?.trim(),
-          addresses: [],
-          points: 0,
-          pointsHistory: [],
-          createdAt: new Date().toISOString(),
-        };
-        set(state => ({ users: [...state.users, user], currentUser: user }));
-        return { success: true };
       },
 
-      login: (email: string, password: string) => {
-        const { users } = get();
-        const user = users.find(u => u.email.toLowerCase() === email.toLowerCase().trim());
-        if (!user) return { success: false, error: 'notFound' };
-        if (user.passwordHash !== hashPassword(password)) {
-          return { success: false, error: 'invalidPassword' };
+      login: async (email: string, password: string) => {
+        try {
+          const json = await api<{ user: User }>('/api/auth/login', {
+            method: 'POST',
+            body: JSON.stringify({ email, password }),
+          });
+          set({ currentUser: sanitize(json.user) });
+          return { success: true };
+        } catch (err: unknown) {
+          const msg = err instanceof Error ? err.message : 'serverError';
+          return { success: false, error: msg };
         }
-        set({ currentUser: user });
-        return { success: true };
       },
 
-      logout: () => set({ currentUser: null }),
+      logout: () => {
+        fetch('/api/auth/logout', { method: 'POST', credentials: 'include' }).catch(() => {});
+        set({ currentUser: null });
+      },
 
-      updateProfile: (updates) => {
+      updateProfile: async (updates) => {
         const { currentUser } = get();
         if (!currentUser) return;
-        const updated = { ...currentUser, ...updates };
-        set(state => ({
-          users: state.users.map(u => u.id === updated.id ? updated : u),
-          currentUser: updated,
-        }));
-      },
-
-      changePassword: (currentPassword, newPassword) => {
-        const { currentUser } = get();
-        if (!currentUser) return { success: false, error: 'notLoggedIn' };
-        if (currentUser.passwordHash !== hashPassword(currentPassword)) {
-          return { success: false, error: 'invalidPassword' };
+        // Optimistic
+        set({ currentUser: { ...currentUser, ...updates } });
+        try {
+          const json = await api<{ user: User }>('/api/auth/profile', {
+            method: 'PATCH',
+            body: JSON.stringify(updates),
+          });
+          set({ currentUser: sanitize(json.user) });
+        } catch {
+          set({ currentUser }); // rollback
         }
-        if (newPassword.length < 6) {
-          return { success: false, error: 'passwordTooShort' };
+      },
+
+      changePassword: async (currentPassword: string, newPassword: string) => {
+        try {
+          await api('/api/auth/profile', {
+            method: 'POST',
+            body: JSON.stringify({ currentPassword, newPassword }),
+          });
+          return { success: true };
+        } catch (err: unknown) {
+          const msg = err instanceof Error ? err.message : 'serverError';
+          return { success: false, error: msg };
         }
-        const updated = { ...currentUser, passwordHash: hashPassword(newPassword) };
-        set(state => ({
-          users: state.users.map(u => u.id === updated.id ? updated : u),
-          currentUser: updated,
-        }));
-        return { success: true };
       },
 
-      addAddress: (addressData) => {
+      addAddress: async (addressData: Omit<SavedAddress, 'id'>) => {
         const { currentUser } = get();
         if (!currentUser) return;
-        const address: SavedAddress = { ...addressData, id: Date.now().toString() };
-        const updated = { ...currentUser, addresses: [...currentUser.addresses, address] };
-        set(state => ({
-          users: state.users.map(u => u.id === updated.id ? updated : u),
-          currentUser: updated,
-        }));
+        try {
+          const json = await api<{ user: User }>('/api/auth/address', {
+            method: 'POST',
+            body: JSON.stringify(addressData),
+          });
+          set({ currentUser: sanitize(json.user) });
+        } catch {
+          // silently fail — UI should show a toast
+        }
       },
 
-      removeAddress: (id) => {
+      removeAddress: async (id: string) => {
         const { currentUser } = get();
         if (!currentUser) return;
-        const updated = {
-          ...currentUser,
-          addresses: currentUser.addresses.filter(a => a.id !== id),
-        };
-        set(state => ({
-          users: state.users.map(u => u.id === updated.id ? updated : u),
-          currentUser: updated,
-        }));
+        // Optimistic
+        const updated = { ...currentUser, addresses: currentUser.addresses.filter(a => a.id !== id) };
+        set({ currentUser: updated });
+        try {
+          const json = await api<{ user: User }>('/api/auth/address', {
+            method: 'DELETE',
+            body: JSON.stringify({ addressId: id }),
+          });
+          set({ currentUser: sanitize(json.user) });
+        } catch {
+          set({ currentUser }); // rollback
+        }
       },
 
-      addPoints: (amount, reason, description, orderId) => {
+      addPoints: async (amount, reason, description, orderId) => {
         const { currentUser } = get();
         if (!currentUser) return;
-        const tx: PointsTransaction = {
-          id: Date.now().toString(),
-          type: amount >= 0 ? 'earned' : 'spent',
-          amount: Math.abs(amount),
-          reason,
-          description,
-          orderId,
-          createdAt: new Date().toISOString(),
-        };
-        const updated = {
+        // Optimistic
+        const optimistic = {
           ...currentUser,
           points: Math.max(0, (currentUser.points ?? 0) + amount),
-          pointsHistory: [tx, ...(currentUser.pointsHistory ?? [])],
         };
-        set(state => ({
-          users: state.users.map(u => u.id === updated.id ? updated : u),
-          currentUser: updated,
-        }));
+        set({ currentUser: optimistic });
+        try {
+          const json = await api<{ user: User }>('/api/auth/points', {
+            method: 'POST',
+            body: JSON.stringify({ amount, reason, description, orderId }),
+          });
+          set({ currentUser: sanitize(json.user) });
+        } catch {
+          set({ currentUser }); // rollback
+        }
       },
 
-      redeemReward: (requiredPoints, discountValue) => {
+      redeemReward: async (requiredPoints: number, discountValue: number) => {
         const { currentUser } = get();
         if (!currentUser) return { success: false };
         if ((currentUser.points ?? 0) < requiredPoints) return { success: false };
-        const code = `PUAN-${discountValue}-${Date.now().toString(36).toUpperCase()}`;
-        const tx: PointsTransaction = {
-          id: Date.now().toString(),
-          type: 'spent',
-          amount: requiredPoints,
-          reason: 'redeemed',
-          description: `${discountValue}₺ indirim kodu: ${code}`,
-          createdAt: new Date().toISOString(),
-        };
-        const updated = {
-          ...currentUser,
-          points: (currentUser.points ?? 0) - requiredPoints,
-          pointsHistory: [tx, ...(currentUser.pointsHistory ?? [])],
-        };
-        set(state => ({
-          users: state.users.map(u => u.id === updated.id ? updated : u),
-          currentUser: updated,
-        }));
-        return { success: true, code };
+        try {
+          const json = await api<{ code: string }>('/api/auth/points', {
+            method: 'POST',
+            body: JSON.stringify({ action: 'redeem', requiredPoints, discountValue }),
+          });
+          set({
+            currentUser: {
+              ...currentUser,
+              points: (currentUser.points ?? 0) - requiredPoints,
+            },
+          });
+          return { success: true, code: json.code };
+        } catch {
+          return { success: false };
+        }
       },
     }),
-    { name: 'harmony-users' }
+    {
+      name: 'harmony-user-session',
+      partialize: (state) => ({ currentUser: state.currentUser }),
+    }
   )
 );

@@ -10,7 +10,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const locale = useLocale();
   const router = useRouter();
   const pathname = usePathname();
-  const isAuthenticated = useAdminStore(s => s.isAuthenticated);
+  const { isAuthenticated, loadAll } = useAdminStore(s => ({ isAuthenticated: s.isAuthenticated, loadAll: s.loadAll }));
   const loginPath = `/${locale}/panel/login`;
   const isLoginPage = pathname === loginPath;
   // Wait for Zustand persist to rehydrate from localStorage before checking auth.
@@ -19,6 +19,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => { setMounted(true); }, []);
+
+  useEffect(() => {
+    if (mounted && isAuthenticated) loadAll();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [mounted, isAuthenticated]);
 
   useEffect(() => {
     if (mounted && !isAuthenticated && !isLoginPage) {

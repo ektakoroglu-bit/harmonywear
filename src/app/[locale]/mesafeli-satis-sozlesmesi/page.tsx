@@ -24,7 +24,7 @@ export default function MesafeliSatisSozlesmesiPage() {
               <p><strong className="text-charcoal">SATICI</strong></p>
               <p>Ünvan: HARMONY Tekstil Ticaret A.Ş.<br />
               Adres: Bağcılar, İstanbul<br />
-              E-posta: destek@harmony.com.tr<br />
+              E-posta: destek@harmonywear.com.tr<br />
               Telefon: +90 (212) 000 00 00</p>
               <p><strong className="text-charcoal">ALICI</strong></p>
               <p>Siteye üye olan ve sipariş veren kişi (bundan böyle "ALICI" olarak anılacaktır).</p>
@@ -87,7 +87,7 @@ export default function MesafeliSatisSozlesmesiPage() {
                 ALICI, ürünü teslim aldığı tarihten itibaren <strong>14 (on dört) takvim günü</strong> içinde herhangi bir gerekçe göstermeksizin ve cezai şart ödemeksizin sözleşmeden cayma hakkına sahiptir.
               </p>
               <p>
-                Cayma hakkının kullanılması için <strong>destek@harmony.com.tr</strong> adresine e-posta gönderilmesi yeterlidir. Cayma hakkının kullanıldığına dair bildirimin söz konusu süre içinde SATICI'ya ulaşmış olması koşuluyla ALICI cayma hakkını kullanmış sayılır.
+                Cayma hakkının kullanılması için <strong>destek@harmonywear.com.tr</strong> adresine e-posta gönderilmesi yeterlidir. Cayma hakkının kullanıldığına dair bildirimin söz konusu süre içinde SATICI'ya ulaşmış olması koşuluyla ALICI cayma hakkını kullanmış sayılır.
               </p>
               <p>
                 Cayma hakkının kullanılması hâlinde, ALICI ürünü 10 gün içinde SATICI'ya iade etmekle yükümlüdür. İade kargo ücreti, kampanya koşullarına bağlı olarak SATICI tarafından karşılanabilir; aksi hâlde ALICI'ya aittir. SATICI, iade bedelini ALICI'ya bildirimin kendisine ulaşmasından itibaren en geç <strong>14 (on dört) gün</strong> içinde iade eder.

@@ -15,7 +15,7 @@ const faqs: { q: string; a: string }[] = [
   },
   {
     q: 'İade ya da değişim yapabilir miyim?',
-    a: 'Ürünü teslim aldığınız tarihten itibaren 14 takvim günü içinde, ürün kullanılmamış, yıkanmamış ve orijinal etiket ile ambalajı bozulmamış olması koşuluyla iade ya da değişim talebinde bulunabilirsiniz. İade talebinizi destek@harmony.com.tr adresine iletmeniz yeterlidir. İade onaylandıktan sonra ödemeniz 3–5 iş günü içinde kartınıza iade edilir.',
+    a: 'Ürünü teslim aldığınız tarihten itibaren 14 takvim günü içinde, ürün kullanılmamış, yıkanmamış ve orijinal etiket ile ambalajı bozulmamış olması koşuluyla iade ya da değişim talebinde bulunabilirsiniz. İade talebinizi destek@harmonywear.com.tr adresine iletmeniz yeterlidir. İade onaylandıktan sonra ödemeniz 3–5 iş günü içinde kartınıza iade edilir.',
   },
   {
     q: 'Hangi ürünler iade kapsamı dışındadır?',
@@ -55,7 +55,7 @@ const faqs: { q: string; a: string }[] = [
   },
   {
     q: 'Siparişimi iptal edebilir miyim?',
-    a: 'Siparişiniz kargoya verilmeden önce destek@harmony.com.tr adresine e-posta göndererek iptal talebinde bulunabilirsiniz. Kargoya verilmiş siparişlerde iptal mümkün değildir; ancak ürünü teslim aldıktan sonra 14 günlük iade hakkınızı kullanabilirsiniz.',
+    a: 'Siparişiniz kargoya verilmeden önce destek@harmonywear.com.tr adresine e-posta göndererek iptal talebinde bulunabilirsiniz. Kargoya verilmiş siparişlerde iptal mümkün değildir; ancak ürünü teslim aldıktan sonra 14 günlük iade hakkınızı kullanabilirsiniz.',
   },
   {
     q: 'Ürünlerin orijinalliği garanti ediliyor mu?',
@@ -96,7 +96,7 @@ export default function SSSPage() {
           <h1 className="font-serif text-4xl font-bold text-charcoal mb-4">Sık Sorulan Sorular</h1>
           <p className="text-gray-500 text-base leading-relaxed">
             Aklınızdaki soruların cevaplarını burada bulabilirsiniz. Bulamadığınız takdirde
-            bize <a href="mailto:destek@harmony.com.tr" className="text-rose-blush hover:underline">destek@harmony.com.tr</a> adresinden ulaşabilirsiniz.
+            bize <a href="mailto:destek@harmonywear.com.tr" className="text-rose-blush hover:underline">destek@harmonywear.com.tr</a> adresinden ulaşabilirsiniz.
           </p>
         </div>
       </div>
@@ -114,7 +114,7 @@ export default function SSSPage() {
           <h2 className="font-serif text-2xl font-bold text-charcoal mb-3">Sorunuzu bulamadınız mı?</h2>
           <p className="text-gray-500 text-sm mb-6">Müşteri hizmetleri ekibimiz size yardımcı olmaktan memnuniyet duyar.</p>
           <a
-            href="mailto:destek@harmony.com.tr"
+            href="mailto:destek@harmonywear.com.tr"
             className="inline-flex items-center gap-2 bg-charcoal text-white px-8 py-3 rounded-full text-sm font-semibold hover:bg-charcoal-light transition-colors"
           >
             Bize Yazın

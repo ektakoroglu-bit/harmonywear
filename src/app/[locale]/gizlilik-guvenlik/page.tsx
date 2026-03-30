@@ -116,7 +116,7 @@ export default function GizlilikGuvenlikPage() {
             <p>
               Bu politikayla ilgili soru ve talepleriniz için:<br /><br />
               <strong>HARMONY Tekstil Ticaret A.Ş.</strong><br />
-              E-posta: destek@harmony.com.tr<br />
+              E-posta: destek@harmonywear.com.tr<br />
               KVKK Başvuruları: kvkk@harmony.com.tr
             </p>
           </section>

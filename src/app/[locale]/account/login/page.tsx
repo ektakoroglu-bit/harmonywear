@@ -31,8 +31,7 @@ export default function LoginPage() {
     setError('');
     if (!email || !password) return;
     setLoading(true);
-    await new Promise(r => setTimeout(r, 400)); // simulate async
-    const result = login(email, password);
+    const result = await login(email, password);
     setLoading(false);
     if (result.success) {
       toast.success(t('loginSuccess'));

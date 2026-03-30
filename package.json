@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.100.1",
     "@types/nodemailer": "^7.0.11",
     "axios": "^1.7.3",
     "clsx": "^2.1.1",
