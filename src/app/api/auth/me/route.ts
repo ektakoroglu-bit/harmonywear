@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import { getSessionUserId } from '@/lib/auth';
 import { getUserById, getPointsHistory } from '@/lib/db/userService';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
   try {
     const userId = getSessionUserId();
