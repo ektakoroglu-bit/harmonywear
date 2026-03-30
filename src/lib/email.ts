@@ -265,13 +265,21 @@ export async function sendOrderConfirmationEmail(order: Order): Promise<void> {
   const from = `"HARMONY" <${process.env.ZOHO_SMTP_USER}>`;
   const subject = `Sipariş Onayı — ${order.id}`;
 
-  await transporter.sendMail({
-    from,
-    to: order.customer.email,
-    subject,
-    html: buildCustomerEmailHtml(order),
-  });
-
-  console.log('[EMAIL] Order confirmation sent to:', order.customer.email);
+  try {
+    await transporter.sendMail({
+      from,
+      to: order.customer.email,
+      subject,
+      html: buildCustomerEmailHtml(order),
+    });
+    console.log('[EMAIL] Order confirmation sent to:', order.customer.email);
+  } catch (err) {
+    console.error('[EMAIL] Failed to send order confirmation:', {
+      to: order.customer.email,
+      orderId: order.id,
+      error: err instanceof Error ? { message: err.message, stack: err.stack } : err,
+    });
+    throw err;
+  }
 }
 
