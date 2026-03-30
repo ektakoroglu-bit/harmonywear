@@ -18,16 +18,20 @@ function getEstimatedDelivery(): string {
 }
 
 function createTransporter() {
-  const user = process.env.EMAIL_USER;
-  const pass = process.env.EMAIL_PASS;
+  const host = process.env.ZOHO_SMTP_HOST;
+  const port = process.env.ZOHO_SMTP_PORT;
+  const user = process.env.ZOHO_SMTP_USER;
+  const pass = process.env.ZOHO_SMTP_PASS;
 
-  if (!user || !pass) {
-    console.log('[EMAIL] EMAIL_USER or EMAIL_PASS not set — email not sent');
+  if (!host || !user || !pass) {
+    console.log('[EMAIL] Zoho SMTP env vars not set — email not sent');
     return null;
   }
 
   return nodemailer.createTransport({
-    service: 'gmail',
+    host,
+    port: port ? parseInt(port, 10) : 465,
+    secure: (port ? parseInt(port, 10) : 465) === 465,
     auth: { user, pass },
   });
 }
@@ -150,7 +154,7 @@ function buildCustomerEmailHtml(order: Order): string {
             <div style="margin-top:40px;padding-top:24px;border-top:1px solid #f0ece9;text-align:center;">
               <p style="margin:0;color:#888;font-size:13px;line-height:1.8;">
                 Siparişinizle ilgili sorularınız için<br>
-                <a href="mailto:${process.env.EMAIL_USER || 'destek@harmonywear.com.tr'}" style="color:#D4A5A5;text-decoration:none;">${process.env.EMAIL_USER || 'destek@harmonywear.com.tr'}</a> adresine yazabilirsiniz.
+                <a href="mailto:${process.env.ZOHO_SMTP_USER || 'destek@harmonywear.com.tr'}" style="color:#D4A5A5;text-decoration:none;">${process.env.ZOHO_SMTP_USER || 'destek@harmonywear.com.tr'}</a> adresine yazabilirsiniz.
               </p>
               <p style="margin:16px 0 0;color:#D4A5A5;font-size:12px;letter-spacing:3px;">HARMONY</p>
             </div>
@@ -253,7 +257,7 @@ export async function sendOrderConfirmationEmail(order: Order): Promise<void> {
   const transporter = createTransporter();
   if (!transporter) return;
 
-  const from = `"HARMONY" <${process.env.EMAIL_USER}>`;
+  const from = `"HARMONY" <${process.env.ZOHO_SMTP_USER}>`;
   const subject = `Sipariş Onayı — ${order.id}`;
 
   await transporter.sendMail({
@@ -270,11 +274,11 @@ export async function sendAdminOrderNotification(order: Order): Promise<void> {
   const transporter = createTransporter();
   if (!transporter) return;
 
-  const adminEmail = process.env.ADMIN_EMAIL || process.env.EMAIL_USER;
+  const adminEmail = process.env.ADMIN_EMAIL || process.env.ZOHO_SMTP_USER;
   if (!adminEmail) return;
 
   await transporter.sendMail({
-    from: `"HARMONY" <${process.env.EMAIL_USER}>`,
+    from: `"HARMONY" <${process.env.ZOHO_SMTP_USER}>`,
     to: adminEmail,
     subject: `[HARMONY] Yeni Sipariş — ${order.id} — ${new Intl.NumberFormat('tr-TR', { style: 'currency', currency: 'TRY' }).format(order.total)}`,
     html: buildAdminEmailHtml(order),
