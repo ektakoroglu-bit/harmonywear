@@ -23,6 +23,11 @@ function createTransporter() {
   const user = process.env.ZOHO_SMTP_USER;
   const pass = process.env.ZOHO_SMTP_PASS;
 
+  console.log('[EMAIL] ZOHO_SMTP_HOST:', host ?? 'NOT SET');
+  console.log('[EMAIL] ZOHO_SMTP_PORT:', port ?? 'NOT SET');
+  console.log('[EMAIL] ZOHO_SMTP_USER:', user ?? 'NOT SET');
+  console.log('[EMAIL] ZOHO_SMTP_PASS:', pass ? '***SET***' : 'NOT SET');
+
   if (!host || !user || !pass) {
     console.log('[EMAIL] Zoho SMTP env vars not set — email not sent');
     return null;
