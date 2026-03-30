@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { sendOrderConfirmationEmail, sendAdminOrderNotification } from '@/lib/email';
+import { sendOrderConfirmationEmail } from '@/lib/email';
 import { Order } from '@/types';
 
 export async function POST(request: NextRequest) {
@@ -10,19 +10,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Invalid order data' }, { status: 400 });
     }
 
-    // Send both emails concurrently; don't block on failures
-    const results = await Promise.allSettled([
-      sendOrderConfirmationEmail(order),
-      sendAdminOrderNotification(order),
-    ]);
-
-    const errors = results
-      .filter((r): r is PromiseRejectedResult => r.status === 'rejected')
-      .map(r => r.reason?.message || 'Unknown error');
-
-    if (errors.length > 0) {
-      console.error('[EMAIL] Errors:', errors);
-    }
+    await sendOrderConfirmationEmail(order);
 
     return NextResponse.json({ success: true });
   } catch (error) {
