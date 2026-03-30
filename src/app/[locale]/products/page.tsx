@@ -76,7 +76,7 @@ function ProductsContent() {
       default: products.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
     }
     return products;
-  }, [filters]);
+  }, [filters, allProducts]);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">

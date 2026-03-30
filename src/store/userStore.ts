@@ -6,8 +6,7 @@ import type { UserState, User, RegisterData, SavedAddress } from '@/types';
 
 // Strips passwordHash before storing — server never sends it to the client anyway
 function sanitize(user: User): User {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { passwordHash: _, ...safe } = user as User & { passwordHash?: string };
+  const { passwordHash: _pw, ...safe } = user as User & { passwordHash?: string };
   return safe as User;
 }
 
