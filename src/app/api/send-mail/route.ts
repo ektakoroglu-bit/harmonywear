@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { sendOrderConfirmationEmail, sendAdminOrderNotification } from '@/lib/email';
+import { sendOrderConfirmationEmail } from '@/lib/email';
 import type { Order } from '@/types';
 
 export const dynamic = 'force-dynamic';
@@ -13,10 +13,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Geçersiz sipariş verisi' }, { status: 400 });
     }
 
-    await Promise.all([
-      sendOrderConfirmationEmail(order),
-      sendAdminOrderNotification(order),
-    ]);
+    await sendOrderConfirmationEmail(order);
 
     return NextResponse.json({ success: true });
   } catch (err) {

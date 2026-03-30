@@ -270,19 +270,3 @@ export async function sendOrderConfirmationEmail(order: Order): Promise<void> {
   console.log('[EMAIL] Order confirmation sent to:', order.customer.email);
 }
 
-export async function sendAdminOrderNotification(order: Order): Promise<void> {
-  const transporter = createTransporter();
-  if (!transporter) return;
-
-  const adminEmail = process.env.ADMIN_EMAIL || process.env.ZOHO_SMTP_USER;
-  if (!adminEmail) return;
-
-  await transporter.sendMail({
-    from: `"HARMONY" <${process.env.ZOHO_SMTP_USER}>`,
-    to: adminEmail,
-    subject: `[HARMONY] Yeni Sipariş — ${order.id} — ${new Intl.NumberFormat('tr-TR', { style: 'currency', currency: 'TRY' }).format(order.total)}`,
-    html: buildAdminEmailHtml(order),
-  });
-
-  console.log('[EMAIL] Admin notification sent to:', adminEmail);
-}
