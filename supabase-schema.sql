@@ -126,6 +126,7 @@ create table if not exists banners (
 -- ============================================================
 create table if not exists orders (
   id               uuid primary key default gen_random_uuid(),
+  display_id       text unique not null,
   user_id          uuid references users(id) on delete set null,
   -- customer snapshot (denormalised so guest orders are self-contained)
   customer_first_name text not null,

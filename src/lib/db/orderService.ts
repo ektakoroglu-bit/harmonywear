@@ -7,6 +7,7 @@ type CreateOrderPayload = Omit<Order, 'id' | 'createdAt'>;
 
 type DbOrder = {
   id: string;
+  display_id: string;
   user_id: string | null;
   customer_first_name: string;
   customer_last_name: string;
@@ -53,9 +54,16 @@ type DbOrderItem = {
 
 // ─── Mappers ──────────────────────────────────────────────────────────────────
 
+function generateDisplayId(): string {
+  const year = new Date().getFullYear();
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  const suffix = Array.from({ length: 4 }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
+  return `HW-${year}-${suffix}`;
+}
+
 function toOrder(row: DbOrder, items: CartItem[] = []): Order {
   return {
-    id: row.id,
+    id: row.display_id,
     items,
     customer: {
       firstName: row.customer_first_name,
@@ -98,7 +106,7 @@ export async function getOrderById(id: string): Promise<Order | null> {
   const { data: orderRow, error } = await supabase
     .from('orders')
     .select('*')
-    .eq('id', id)
+    .eq('display_id', id)
     .single();
 
   if (error || !orderRow) return null;
@@ -148,9 +156,12 @@ export async function createOrder(
 ): Promise<Order | null> {
   const { customer, shippingAddress, billingAddress, items } = payload;
 
+  const displayId = generateDisplayId();
+
   const { data: orderRow, error } = await supabase
     .from('orders')
     .insert({
+      display_id: displayId,
       user_id: userId ?? null,
       customer_first_name: customer.firstName,
       customer_last_name: customer.lastName,
