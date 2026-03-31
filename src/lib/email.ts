@@ -258,6 +258,152 @@ function buildAdminEmailHtml(order: Order): string {
   `.trim();
 }
 
+function buildShippingTrackingEmailHtml(order: Order, trackingNumber: string, trackingUrl: string): string {
+  return `
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Kargonuz Yola Çıktı — HARMONY</title>
+</head>
+<body style="margin:0;padding:0;background:#FAF7F5;font-family:Arial,sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#FAF7F5;padding:40px 20px;">
+    <tr><td align="center">
+      <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;">
+        <tr>
+          <td style="background:#2D2D2D;padding:32px 40px;text-align:center;border-radius:12px 12px 0 0;">
+            <h1 style="margin:0;color:#D4A5A5;font-size:28px;letter-spacing:6px;font-weight:300;">HARMONY</h1>
+            <p style="margin:8px 0 0;color:#FAF7F5;font-size:12px;letter-spacing:2px;opacity:0.8;">SHAPEWEAR & BODYSUIT</p>
+          </td>
+        </tr>
+        <tr>
+          <td style="background:#ffffff;padding:40px;border-radius:0 0 12px 12px;">
+            <h2 style="margin:0 0 8px;color:#2D2D2D;font-size:22px;">Kargonuz yola çıktı! 🚚</h2>
+            <p style="margin:0 0 24px;color:#666;line-height:1.6;">
+              Merhaba ${order.customer.firstName},<br>
+              Siparişiniz kargoya verildi. Aşağıdaki bilgileri kullanarak takip edebilirsiniz.
+            </p>
+            <div style="background:#FAF7F5;border-left:4px solid #D4A5A5;padding:16px 20px;border-radius:0 8px 8px 0;margin-bottom:24px;">
+              <p style="margin:0;color:#888;font-size:12px;text-transform:uppercase;letter-spacing:1px;">Sipariş Numarası</p>
+              <p style="margin:4px 0 0;color:#2D2D2D;font-size:16px;font-weight:bold;">${order.id}</p>
+            </div>
+            <div style="background:#FAF7F5;border-left:4px solid #D4A5A5;padding:16px 20px;border-radius:0 8px 8px 0;margin-bottom:32px;">
+              <p style="margin:0;color:#888;font-size:12px;text-transform:uppercase;letter-spacing:1px;">Kargo Takip Numarası</p>
+              <p style="margin:4px 0 0;color:#2D2D2D;font-size:16px;font-weight:bold;">${trackingNumber}</p>
+            </div>
+            <div style="text-align:center;margin-bottom:32px;">
+              <a href="${trackingUrl}" style="display:inline-block;background:#2D2D2D;color:#FAF7F5;text-decoration:none;padding:14px 32px;border-radius:8px;font-size:14px;letter-spacing:1px;">Kargonu Takip Et</a>
+            </div>
+            <p style="margin:0;color:#888;font-size:13px;line-height:1.8;text-align:center;">
+              Sorularınız için
+              <a href="mailto:${process.env.ZOHO_SMTP_USER || 'noreply@harmonywear.com.tr'}" style="color:#D4A5A5;text-decoration:none;">${process.env.ZOHO_SMTP_USER || 'noreply@harmonywear.com.tr'}</a>
+            </p>
+            <p style="margin:16px 0 0;color:#D4A5A5;font-size:12px;letter-spacing:3px;text-align:center;">HARMONY</p>
+          </td>
+        </tr>
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>
+  `.trim();
+}
+
+function buildPasswordResetEmailHtml(resetLink: string): string {
+  return `
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Şifre Sıfırlama — HARMONY</title>
+</head>
+<body style="margin:0;padding:0;background:#FAF7F5;font-family:Arial,sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#FAF7F5;padding:40px 20px;">
+    <tr><td align="center">
+      <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;">
+        <tr>
+          <td style="background:#2D2D2D;padding:32px 40px;text-align:center;border-radius:12px 12px 0 0;">
+            <h1 style="margin:0;color:#D4A5A5;font-size:28px;letter-spacing:6px;font-weight:300;">HARMONY</h1>
+            <p style="margin:8px 0 0;color:#FAF7F5;font-size:12px;letter-spacing:2px;opacity:0.8;">SHAPEWEAR & BODYSUIT</p>
+          </td>
+        </tr>
+        <tr>
+          <td style="background:#ffffff;padding:40px;border-radius:0 0 12px 12px;">
+            <h2 style="margin:0 0 8px;color:#2D2D2D;font-size:22px;">Şifre Sıfırlama</h2>
+            <p style="margin:0 0 24px;color:#666;line-height:1.6;">
+              Hesabınız için şifre sıfırlama talebinde bulundunuz.<br>
+              Aşağıdaki butona tıklayarak yeni şifrenizi belirleyebilirsiniz.
+            </p>
+            <div style="text-align:center;margin-bottom:32px;">
+              <a href="${resetLink}" style="display:inline-block;background:#2D2D2D;color:#FAF7F5;text-decoration:none;padding:14px 32px;border-radius:8px;font-size:14px;letter-spacing:1px;">Şifremi Sıfırla</a>
+            </div>
+            <p style="margin:0 0 16px;color:#888;font-size:13px;line-height:1.8;text-align:center;">
+              Bu bağlantı 1 saat geçerlidir. Eğer bu talebi siz yapmadıysanız bu e-postayı görmezden gelebilirsiniz.
+            </p>
+            <p style="margin:0;color:#888;font-size:13px;line-height:1.8;text-align:center;">
+              Sorularınız için
+              <a href="mailto:${process.env.ZOHO_SMTP_USER || 'noreply@harmonywear.com.tr'}" style="color:#D4A5A5;text-decoration:none;">${process.env.ZOHO_SMTP_USER || 'noreply@harmonywear.com.tr'}</a>
+            </p>
+            <p style="margin:16px 0 0;color:#D4A5A5;font-size:12px;letter-spacing:3px;text-align:center;">HARMONY</p>
+          </td>
+        </tr>
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>
+  `.trim();
+}
+
+function buildStockNotificationEmailHtml(productName: string): string {
+  return `
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Ürün Tekrar Stokta — HARMONY</title>
+</head>
+<body style="margin:0;padding:0;background:#FAF7F5;font-family:Arial,sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#FAF7F5;padding:40px 20px;">
+    <tr><td align="center">
+      <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;">
+        <tr>
+          <td style="background:#2D2D2D;padding:32px 40px;text-align:center;border-radius:12px 12px 0 0;">
+            <h1 style="margin:0;color:#D4A5A5;font-size:28px;letter-spacing:6px;font-weight:300;">HARMONY</h1>
+            <p style="margin:8px 0 0;color:#FAF7F5;font-size:12px;letter-spacing:2px;opacity:0.8;">SHAPEWEAR & BODYSUIT</p>
+          </td>
+        </tr>
+        <tr>
+          <td style="background:#ffffff;padding:40px;border-radius:0 0 12px 12px;">
+            <h2 style="margin:0 0 8px;color:#2D2D2D;font-size:22px;">İyi haber! Ürün tekrar stokta 🎉</h2>
+            <p style="margin:0 0 24px;color:#666;line-height:1.6;">
+              Beklediğiniz ürün tekrar stoğa girdi. Hemen sipariş verin, kaçırmayın!
+            </p>
+            <div style="background:#FAF7F5;border-left:4px solid #D4A5A5;padding:16px 20px;border-radius:0 8px 8px 0;margin-bottom:32px;">
+              <p style="margin:0;color:#888;font-size:12px;text-transform:uppercase;letter-spacing:1px;">Ürün</p>
+              <p style="margin:4px 0 0;color:#2D2D2D;font-size:18px;font-weight:bold;">${productName}</p>
+            </div>
+            <div style="text-align:center;margin-bottom:32px;">
+              <a href="${process.env.NEXT_PUBLIC_BASE_URL || 'https://harmonywear.com.tr'}/products" style="display:inline-block;background:#2D2D2D;color:#FAF7F5;text-decoration:none;padding:14px 32px;border-radius:8px;font-size:14px;letter-spacing:1px;">Alışverişe Git</a>
+            </div>
+            <p style="margin:0;color:#888;font-size:13px;line-height:1.8;text-align:center;">
+              Sorularınız için
+              <a href="mailto:${process.env.ZOHO_SMTP_USER || 'noreply@harmonywear.com.tr'}" style="color:#D4A5A5;text-decoration:none;">${process.env.ZOHO_SMTP_USER || 'noreply@harmonywear.com.tr'}</a>
+            </p>
+            <p style="margin:16px 0 0;color:#D4A5A5;font-size:12px;letter-spacing:3px;text-align:center;">HARMONY</p>
+          </td>
+        </tr>
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>
+  `.trim();
+}
+
 export async function sendOrderConfirmationEmail(order: Order): Promise<void> {
   const transporter = createTransporter();
   if (!transporter) return;
@@ -283,3 +429,71 @@ export async function sendOrderConfirmationEmail(order: Order): Promise<void> {
   }
 }
 
+export async function sendShippingTrackingEmail(
+  order: Order,
+  trackingNumber: string,
+  trackingUrl: string
+): Promise<void> {
+  const transporter = createTransporter();
+  if (!transporter) return;
+
+  try {
+    await transporter.sendMail({
+      from: `"HARMONY" <${process.env.ZOHO_SMTP_USER}>`,
+      to: order.customer.email,
+      subject: `Kargonuz Yola Çıktı — ${order.id}`,
+      html: buildShippingTrackingEmailHtml(order, trackingNumber, trackingUrl),
+    });
+    console.log('[EMAIL] Shipping tracking sent to:', order.customer.email);
+  } catch (err) {
+    console.error('[EMAIL] Failed to send shipping tracking:', {
+      to: order.customer.email,
+      orderId: order.id,
+      error: err instanceof Error ? { message: err.message, stack: err.stack } : err,
+    });
+    throw err;
+  }
+}
+
+export async function sendPasswordResetEmail(email: string, resetLink: string): Promise<void> {
+  const transporter = createTransporter();
+  if (!transporter) return;
+
+  try {
+    await transporter.sendMail({
+      from: `"HARMONY" <${process.env.ZOHO_SMTP_USER}>`,
+      to: email,
+      subject: 'Şifre Sıfırlama — HARMONY',
+      html: buildPasswordResetEmailHtml(resetLink),
+    });
+    console.log('[EMAIL] Password reset sent to:', email);
+  } catch (err) {
+    console.error('[EMAIL] Failed to send password reset:', {
+      to: email,
+      error: err instanceof Error ? { message: err.message, stack: err.stack } : err,
+    });
+    throw err;
+  }
+}
+
+export async function sendStockNotificationEmail(email: string, productName: string): Promise<void> {
+  const transporter = createTransporter();
+  if (!transporter) return;
+
+  try {
+    await transporter.sendMail({
+      from: `"HARMONY" <${process.env.ZOHO_SMTP_USER}>`,
+      to: email,
+      subject: `${productName} — Tekrar Stokta!`,
+      html: buildStockNotificationEmailHtml(productName),
+    });
+    console.log('[EMAIL] Stock notification sent to:', email);
+  } catch (err) {
+    console.error('[EMAIL] Failed to send stock notification:', {
+      to: email,
+      productName,
+      error: err instanceof Error ? { message: err.message, stack: err.stack } : err,
+    });
+    throw err;
+  }
+}
