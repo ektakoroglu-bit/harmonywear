@@ -449,6 +449,16 @@ export async function deleteStockNotification(id: string): Promise<boolean> {
   return !error;
 }
 
+export async function getStockNotificationsByProductId(productId: string): Promise<StockNotification[]> {
+  const { data, error } = await supabase
+    .from('stock_notifications')
+    .select('*')
+    .eq('product_id', productId);
+
+  if (error || !data) return [];
+  return data.map(toStockNotification);
+}
+
 // ─── Internal helpers ─────────────────────────────────────────────────────────
 
 async function upsertProductColors(
