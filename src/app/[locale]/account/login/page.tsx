@@ -97,6 +97,12 @@ export default function LoginPage() {
                 </div>
               </div>
 
+              <div className="flex justify-end -mt-1">
+                <Link href={`/${locale}/account/forgot-password`} className="text-xs text-rose-deep hover:underline">
+                  {locale === 'tr' ? 'Şifremi unuttum' : 'Forgot password?'}
+                </Link>
+              </div>
+
               {error && (
                 <p className="text-xs text-red-500 bg-red-50 rounded-lg px-3 py-2">{error}</p>
               )}

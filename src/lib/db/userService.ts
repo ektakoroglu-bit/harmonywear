@@ -218,6 +218,29 @@ export async function getPointsHistory(userId: string): Promise<PointsTransactio
   }));
 }
 
+// ─── Password reset tokens ────────────────────────────────────────────────────
+
+export async function createPasswordResetToken(userId: string, token: string): Promise<boolean> {
+  const expiresAt = new Date(Date.now() + 60 * 60 * 1000).toISOString(); // 1 hour
+  // Invalidate previous unused tokens for this user
+  await supabase.from('password_reset_tokens').update({ used: true }).eq('user_id', userId).eq('used', false);
+  const { error } = await supabase.from('password_reset_tokens').insert({ user_id: userId, token, expires_at: expiresAt });
+  return !error;
+}
+
+export async function consumePasswordResetToken(token: string): Promise<string | null> {
+  const { data, error } = await supabase
+    .from('password_reset_tokens')
+    .select('user_id, expires_at, used')
+    .eq('token', token)
+    .single();
+
+  if (error || !data || data.used || new Date(data.expires_at) < new Date()) return null;
+
+  await supabase.from('password_reset_tokens').update({ used: true }).eq('token', token);
+  return data.user_id;
+}
+
 export async function addPointsTransaction(
   userId: string,
   tx: Omit<PointsTransaction, 'id' | 'createdAt'>
