@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import {
   ShoppingCart, Package, CheckCircle, Truck,
-  ChevronDown, ChevronRight, Tag, MapPin, RefreshCw,
+  ChevronDown, ChevronRight, Tag, MapPin, RefreshCw, Send,
 } from 'lucide-react';
 import { useAdminStore } from '@/store/adminStore';
 import { formatPrice } from '@/lib/utils';
@@ -18,6 +18,64 @@ const statusConfig: Record<OrderStatus, { label: { tr: string; en: string }; col
   delivered:  { label: { tr: 'Teslim Edildi',              en: 'Delivered'  }, color: 'bg-emerald-100 text-emerald-700', icon: CheckCircle },
   cancelled:  { label: { tr: 'İptal Edildi',               en: 'Cancelled'  }, color: 'bg-red-100 text-red-700',         icon: Package     },
 };
+
+function TrackingForm({ order, locale }: { order: Order; locale: 'tr' | 'en' }) {
+  const [trackingNumber, setTrackingNumber] = useState(order.trackingNumber ?? '');
+  const [trackingUrl, setTrackingUrl] = useState('');
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
+
+  const handleSave = async () => {
+    if (!trackingNumber.trim()) return;
+    setSaving(true);
+    try {
+      await fetch(`/api/admin/orders/${order.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ trackingNumber: trackingNumber.trim(), trackingUrl: trackingUrl.trim() }),
+      });
+      setSaved(true);
+      setTimeout(() => setSaved(false), 3000);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <div className="bg-white rounded-xl border border-gray-100 p-4 space-y-3">
+      <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wide flex items-center gap-1">
+        <Truck size={12} />
+        {locale === 'tr' ? 'Kargo Takip' : 'Shipping Tracking'}
+      </h3>
+      <input
+        type="text"
+        value={trackingNumber}
+        onChange={e => setTrackingNumber(e.target.value)}
+        placeholder={locale === 'tr' ? 'Takip numarası' : 'Tracking number'}
+        className="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-rose-blush/40"
+      />
+      <input
+        type="text"
+        value={trackingUrl}
+        onChange={e => setTrackingUrl(e.target.value)}
+        placeholder={locale === 'tr' ? 'Takip linki (opsiyonel)' : 'Tracking URL (optional)'}
+        className="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-rose-blush/40"
+      />
+      <button
+        onClick={handleSave}
+        disabled={saving || !trackingNumber.trim()}
+        className="flex items-center gap-2 text-sm bg-charcoal text-white px-4 py-2 rounded-lg hover:bg-charcoal/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+      >
+        <Send size={13} />
+        {saved
+          ? (locale === 'tr' ? 'Gönderildi!' : 'Sent!')
+          : saving
+            ? (locale === 'tr' ? 'Kaydediliyor...' : 'Saving...')
+            : (locale === 'tr' ? 'Kaydet & Müşteriyi Bildir' : 'Save & Notify Customer')}
+      </button>
+    </div>
+  );
+}
 
 function OrderDetail({ order, locale }: { order: Order; locale: 'tr' | 'en' }) {
   return (
@@ -100,6 +158,9 @@ function OrderDetail({ order, locale }: { order: Order; locale: 'tr' | 'en' }) {
             </div>
           </div>
         </div>
+
+        {/* Tracking */}
+        <TrackingForm order={order} locale={locale} />
 
         {/* Shipping address */}
         <div>

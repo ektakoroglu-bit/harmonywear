@@ -34,6 +34,7 @@ type DbOrder = {
   discount_code: string | null;
   status: OrderStatus;
   payment_id: string | null;
+  tracking_number: string | null;
   created_at: string;
 };
 
@@ -96,6 +97,7 @@ function toOrder(row: DbOrder, items: CartItem[] = []): Order {
     discountCode: row.discount_code ?? undefined,
     status: row.status,
     paymentId: row.payment_id ?? undefined,
+    trackingNumber: row.tracking_number ?? undefined,
     createdAt: row.created_at,
   };
 }
@@ -222,6 +224,15 @@ export async function updateOrderStatus(id: string, status: OrderStatus): Promis
     .from('orders')
     .update({ status })
     .eq('id', id);
+
+  return !error;
+}
+
+export async function updateTrackingNumber(displayId: string, trackingNumber: string): Promise<boolean> {
+  const { error } = await supabase
+    .from('orders')
+    .update({ tracking_number: trackingNumber, status: 'shipped' })
+    .eq('display_id', displayId);
 
   return !error;
 }

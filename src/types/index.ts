@@ -102,6 +102,7 @@ export interface Order {
   discountCode?: string;
   status: OrderStatus;
   paymentId?: string;
+  trackingNumber?: string;
   createdAt: string;
 }
 

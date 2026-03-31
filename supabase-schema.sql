@@ -157,6 +157,7 @@ create table if not exists orders (
   status           text not null default 'pending'
                      check (status in ('pending','paid','processing','shipped','delivered','cancelled')),
   payment_id       text,
+  tracking_number  text,
   created_at       timestamptz not null default now()
 );
 
